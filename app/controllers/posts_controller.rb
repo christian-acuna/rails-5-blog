@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :find_post, only: [:edit, :update, :show, :delete]
+  before_action :authenticate_admin!, except: [:index, :show]
 
   def index
     @posts = Post.all
@@ -37,9 +38,10 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    if @post.destroy
+    post = Post.find(params[:id])
+    if post.destroy
       flash[:notice] = "Successfully deleted post!"
-      redirect_to post_path
+      redirect_to '/'
     else
       flah[:alert] = "Error updating post!"
     end
